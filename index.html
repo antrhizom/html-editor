@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML-Editor Workshop</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #fef9f3 0%, #f0f4ff 100%);
+            min-height: 100vh;
+            color: #2d3748;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .header h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .lang-toggle {
+            display: flex;
+            background: rgba(255,255,255,0.2);
+            border-radius: 25px;
+            overflow: hidden;
+        }
+
+        .lang-btn {
+            padding: 0.4rem 1rem;
+            border: none;
+            background: transparent;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .lang-btn.active {
+            background: rgba(255,255,255,0.35);
+            border-radius: 25px;
+        }
+
+        .lang-btn:hover:not(.active) {
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            background: white;
+            border-bottom: 3px solid #edf2f7;
+            padding: 0 1rem;
+            overflow-x: auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .tab-btn {
+            padding: 1rem 1.2rem;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #718096;
+            white-space: nowrap;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -3px;
+        }
+
+        .tab-btn:hover {
+            color: #667eea;
+            background: #f7fafc;
+        }
+
+        .tab-btn.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        /* Content */
+        .tab-content {
+            display: none;
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            border-left: 5px solid #667eea;
+        }
+
+        .card.orange { border-left-color: #ed8936; }
+        .card.green { border-left-color: #48bb78; }
+        .card.pink { border-left-color: #ed64a6; }
+        .card.teal { border-left-color: #38b2ac; }
+        .card.red { border-left-color: #e53e3e; }
+
+        .card h2 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card h3 {
+            font-size: 1.1rem;
+            margin: 1.2rem 0 0.6rem;
+            color: #4a5568;
+        }
+
+        .card p, .card li {
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+        }
+
+        .card ul, .card ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .card ol li {
+            margin-bottom: 0.6rem;
+        }
+
+        .step-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .step-box {
+            background: linear-gradient(135deg, #f6f8ff 0%, #fff5f5 100%);
+            border-radius: 12px;
+            padding: 1.2rem;
+            text-align: center;
+            border: 2px solid #edf2f7;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .step-box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+        }
+
+        .step-box .step-num {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            font-size: 1rem;
+        }
+
+        .step-box p {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .code-block {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 1rem 1.4rem;
+            border-radius: 10px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            margin: 0.8rem 0;
+            overflow-x: auto;
+        }
+
+        .os-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .os-btn {
+            padding: 0.5rem 1.2rem;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .os-btn.active {
+            border-color: #667eea;
+            background: #ebf4ff;
+            color: #667eea;
+        }
+
+        .os-content {
+            display: none;
+        }
+
+        .os-content.active {
+            display: block;
+        }
+
+        .prompt-example {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            border: 2px solid #f6e05e;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .prompt-example h4 {
+            color: #975a16;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .prompt-example p {
+            color: #744210;
+            font-size: 0.95rem;
+            font-style: italic;
+        }
+
+        .tip-box {
+            background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%);
+            border: 2px solid #68d391;
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .tip-box p {
+            color: #276749;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+            border: 2px solid #fc8181;
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .warning-box p {
+            color: #9b2c2c;
+        }
+
+        .padlet-wrapper {
+            margin: 1.5rem 0;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #e2e8f0;
+        }
+
+        .padlet-wrapper iframe {
+            width: 100%;
+            height: 500px;
+            display: block;
+        }
+
+        .checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            padding: 0.5rem 0;
+            padding-left: 2rem;
+            position: relative;
+        }
+
+        .checklist li::before {
+            content: "✅";
+            position: absolute;
+            left: 0;
+        }
+
+        .intro-hero {
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        .intro-hero .emoji-big {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .intro-hero h2 {
+            font-size: 1.8rem;
+            justify-content: center;
+        }
+
+        .intro-hero p {
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0.5rem auto;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #a0aec0;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 768px) {
+            .header { flex-direction: column; gap: 1rem; text-align: center; }
+            .header h1 { font-size: 1.3rem; }
+            .tab-btn { padding: 0.8rem 0.9rem; font-size: 0.85rem; }
+            .card { padding: 1.4rem; }
+            .step-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+    <h1>&#x1F4BB; HTML-Editor Workshop</h1>
+    <div class="lang-toggle">
+        <button class="lang-btn active" onclick="setLang('de')">DE</button>
+        <button class="lang-btn" onclick="setLang('fr')">FR</button>
+    </div>
+</header>
+
+<!-- Tab Navigation -->
+<nav class="tab-nav">
+    <button class="tab-btn active" onclick="openTab('intro')">
+        <span class="de">&#x1F3AF; Einführung</span>
+        <span class="fr" style="display:none">&#x1F3AF; Introduction</span>
+    </button>
+    <button class="tab-btn" onclick="openTab('guide')">
+        <span class="de">&#x1F6E0;&#xFE0F; Anleitung</span>
+        <span class="fr" style="display:none">&#x1F6E0;&#xFE0F; Guide</span>
+    </button>
+    <button class="tab-btn" onclick="openTab('prompts')">
+        <span class="de">&#x1F4DD; Beispiel-Prompts</span>
+        <span class="fr" style="display:none">&#x1F4DD; Exemples de prompts</span>
+    </button>
+    <button class="tab-btn" onclick="openTab('create')">
+        <span class="de">&#x1F680; Eigene Prompts</span>
+        <span class="fr" style="display:none">&#x1F680; Créer ses prompts</span>
+    </button>
+    <button class="tab-btn" onclick="openTab('legal')">
+        <span class="de">&#x1F512; Datenschutz & Recht</span>
+        <span class="fr" style="display:none">&#x1F512; Protection & Droit</span>
+    </button>
+</nav>
+
+<!-- ==================== TAB 1: Einführung ==================== -->
+<div id="intro" class="tab-content active">
+    <div class="card">
+        <div class="intro-hero">
+            <div class="emoji-big">&#x1F31F;</div>
+            <h2>
+                <span class="de">Willkommen zum HTML-Editor Workshop</span>
+                <span class="fr" style="display:none">Bienvenue à l'atelier HTML-Editor</span>
+            </h2>
+            <p>
+                <span class="de">In diesem Workshop lernen Sie, mit Hilfe von KI-Bots interaktive HTML-Lernseiten zu erstellen — ohne Programmierkenntnisse!</span>
+                <span class="fr" style="display:none">Dans cet atelier, vous apprendrez à créer des pages d'apprentissage HTML interactives à l'aide de bots IA — sans connaissances en programmation !</span>
+            </p>
+        </div>
+    </div>
+
+    <div class="card orange">
+        <h2>
+            <span class="de">&#x1F3AF; Ziel des Workshops</span>
+            <span class="fr" style="display:none">&#x1F3AF; Objectif de l'atelier</span>
+        </h2>
+        <p>
+            <span class="de">Sie werden am Ende dieses Workshops in der Lage sein, eigenständig interaktive HTML-Seiten zu erstellen, die Sie als <strong>Lernmaterialien</strong> im Unterricht einsetzen können. Dazu nutzen Sie einen KI-Bot (z.&#x202F;B. ChatGPT, Claude, Copilot), dem Sie über sogenannte <strong>Prompts</strong> Anweisungen geben.</span>
+            <span class="fr" style="display:none">À la fin de cet atelier, vous serez capable de créer de manière autonome des pages HTML interactives que vous pourrez utiliser comme <strong>supports pédagogiques</strong> en classe. Pour cela, vous utiliserez un bot IA (p. ex. ChatGPT, Claude, Copilot) auquel vous donnerez des instructions via des <strong>prompts</strong>.</span>
+        </p>
+    </div>
+
+    <div class="card green">
+        <h2>
+            <span class="de">&#x2705; Was Sie erreichen werden</span>
+            <span class="fr" style="display:none">&#x2705; Ce que vous allez accomplir</span>
+        </h2>
+        <ul>
+            <li>
+                <span class="de">Verstehen, wie der Prozess von Prompt zu HTML-Seite funktioniert</span>
+                <span class="fr" style="display:none">Comprendre comment fonctionne le processus du prompt à la page HTML</span>
+            </li>
+            <li>
+                <span class="de">Eigene interaktive Lernseiten erstellen (Quizze, Übungen, Infoseiten)</span>
+                <span class="fr" style="display:none">Créer vos propres pages d'apprentissage interactives (quiz, exercices, pages d'information)</span>
+            </li>
+            <li>
+                <span class="de">Prompts iterativ verbessern für bessere Ergebnisse</span>
+                <span class="fr" style="display:none">Améliorer les prompts de manière itérative pour de meilleurs résultats</span>
+            </li>
+            <li>
+                <span class="de">Die fertigen Seiten an Lernende verteilen</span>
+                <span class="fr" style="display:none">Distribuer les pages finies aux apprenants</span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="card pink">
+        <h2>
+            <span class="de">&#x1F4A1; Keine Vorkenntnisse nötig</span>
+            <span class="fr" style="display:none">&#x1F4A1; Aucune connaissance préalable requise</span>
+        </h2>
+        <p>
+            <span class="de">Sie brauchen <strong>keine Programmierkenntnisse</strong>. Der KI-Bot schreibt den Code für Sie. Sie konzentrieren sich darauf, <strong>was</strong> die Seite können soll — der Bot kümmert sich um das <strong>Wie</strong>.</span>
+            <span class="fr" style="display:none">Vous n'avez <strong>pas besoin de connaissances en programmation</strong>. Le bot IA écrit le code pour vous. Vous vous concentrez sur <strong>ce que</strong> la page doit faire — le bot s'occupe du <strong>comment</strong>.</span>
+        </p>
+    </div>
+</div>
+
+<!-- ==================== TAB 2: Anleitung ==================== -->
+<div id="guide" class="tab-content">
+    <div class="card">
+        <h2>
+            <span class="de">&#x1F6E0;&#xFE0F; Der Prozess: Vom Prompt zur HTML-Seite</span>
+            <span class="fr" style="display:none">&#x1F6E0;&#xFE0F; Le processus : du prompt à la page HTML</span>
+        </h2>
+        <div class="step-grid">
+            <div class="step-box">
+                <div class="step-num">1</div>
+                <p>
+                    <span class="de">KI-Bot öffnen</span>
+                    <span class="fr" style="display:none">Ouvrir le bot IA</span>
+                </p>
+            </div>
+            <div class="step-box">
+                <div class="step-num">2</div>
+                <p>
+                    <span class="de">Prompt eingeben</span>
+                    <span class="fr" style="display:none">Entrer le prompt</span>
+                </p>
+            </div>
+            <div class="step-box">
+                <div class="step-num">3</div>
+                <p>
+                    <span class="de">Code kopieren</span>
+                    <span class="fr" style="display:none">Copier le code</span>
+                </p>
+            </div>
+            <div class="step-box">
+                <div class="step-num">4</div>
+                <p>
+                    <span class="de">Als .html speichern</span>
+                    <span class="fr" style="display:none">Enregistrer en .html</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card orange">
+        <h2>
+            <span class="de">&#x1F4CB; Schritt-für-Schritt-Anleitung</span>
+            <span class="fr" style="display:none">&#x1F4CB; Instructions étape par étape</span>
+        </h2>
+        <ol>
+            <li>
+                <span class="de"><strong>KI-Bot öffnen:</strong> Öffnen Sie einen KI-Bot Ihrer Wahl im Browser — z.&#x202F;B. <em>ChatGPT</em> (chat.openai.com), <em>Claude</em> (claude.ai), oder <em>Copilot</em> (copilot.microsoft.com).</span>
+                <span class="fr" style="display:none"><strong>Ouvrir le bot IA :</strong> Ouvrez un bot IA de votre choix dans le navigateur — p. ex. <em>ChatGPT</em> (chat.openai.com), <em>Claude</em> (claude.ai) ou <em>Copilot</em> (copilot.microsoft.com).</span>
+            </li>
+            <li>
+                <span class="de"><strong>Prompt eingeben:</strong> Schreiben Sie Ihren Prompt (Anweisung) in das Chatfeld. Beschreiben Sie, was Ihre HTML-Seite enthalten und können soll (siehe Tab «Beispiel-Prompts»).</span>
+                <span class="fr" style="display:none"><strong>Entrer le prompt :</strong> Écrivez votre prompt (instruction) dans le champ de chat. Décrivez ce que votre page HTML doit contenir et faire (voir l'onglet « Exemples de prompts »).</span>
+            </li>
+            <li>
+                <span class="de"><strong>Ergebnis kopieren:</strong> Der Bot gibt Ihnen HTML-Code zurück. Kopieren Sie den <strong>gesamten Code</strong> (alles von <code>&lt;!DOCTYPE html&gt;</code> bis <code>&lt;/html&gt;</code>).</span>
+                <span class="fr" style="display:none"><strong>Copier le résultat :</strong> Le bot vous renvoie du code HTML. Copiez <strong>tout le code</strong> (tout de <code>&lt;!DOCTYPE html&gt;</code> à <code>&lt;/html&gt;</code>).</span>
+            </li>
+            <li>
+                <span class="de"><strong>In Textdatei einfügen:</strong> Öffnen Sie einen Texteditor (z.&#x202F;B. Editor/Notepad auf Windows, TextEdit auf Mac) und fügen Sie den kopierten Code ein.</span>
+                <span class="fr" style="display:none"><strong>Coller dans un fichier texte :</strong> Ouvrez un éditeur de texte (p. ex. Bloc-notes sur Windows, TextEdit sur Mac) et collez le code copié.</span>
+            </li>
+            <li>
+                <span class="de"><strong>Als HTML-Datei speichern:</strong> Speichern Sie die Datei mit der Endung <code>.html</code> (siehe technische Anleitung unten).</span>
+                <span class="fr" style="display:none"><strong>Enregistrer en tant que fichier HTML :</strong> Enregistrez le fichier avec l'extension <code>.html</code> (voir les instructions techniques ci-dessous).</span>
+            </li>
+            <li>
+                <span class="de"><strong>Im Browser öffnen:</strong> Doppelklicken Sie auf die gespeicherte .html-Datei — sie öffnet sich in Ihrem Browser!</span>
+                <span class="fr" style="display:none"><strong>Ouvrir dans le navigateur :</strong> Double-cliquez sur le fichier .html enregistré — il s'ouvre dans votre navigateur !</span>
+            </li>
+        </ol>
+    </div>
+
+    <!-- OS-spezifische Anleitungen -->
+    <div class="card green">
+        <h2>
+            <span class="de">&#x1F4BB; Technische Anleitung: Datei als .html speichern</span>
+            <span class="fr" style="display:none">&#x1F4BB; Instructions techniques : enregistrer en .html</span>
+        </h2>
+
+        <div class="os-tabs">
+            <button class="os-btn active" onclick="switchOS('windows')">&#x1FA9F; Windows</button>
+            <button class="os-btn" onclick="switchOS('mac')">&#x1F34E; Mac</button>
+        </div>
+
+        <div id="os-windows" class="os-content active">
+            <h3>
+                <span class="de">Methode 1: Direkt im Editor (Notepad) speichern</span>
+                <span class="fr" style="display:none">Méthode 1 : Enregistrer directement dans le Bloc-notes</span>
+            </h3>
+            <ol>
+                <li>
+                    <span class="de">Öffnen Sie <strong>Editor</strong> (Notepad): Startmenü → «Editor» eingeben</span>
+                    <span class="fr" style="display:none">Ouvrez le <strong>Bloc-notes</strong> : Menu Démarrer → tapez « Bloc-notes »</span>
+                </li>
+                <li>
+                    <span class="de">Fügen Sie den Code ein (Ctrl+V)</span>
+                    <span class="fr" style="display:none">Collez le code (Ctrl+V)</span>
+                </li>
+                <li>
+                    <span class="de">Klicken Sie auf <strong>Datei → Speichern unter…</strong></span>
+                    <span class="fr" style="display:none">Cliquez sur <strong>Fichier → Enregistrer sous…</strong></span>
+                </li>
+                <li>
+                    <span class="de">Wählen Sie bei «Dateityp» → <strong>Alle Dateien (*.*)</strong></span>
+                    <span class="fr" style="display:none">Choisissez « Type de fichier » → <strong>Tous les fichiers (*.*)</strong></span>
+                </li>
+                <li>
+                    <span class="de">Geben Sie als Dateiname z.&#x202F;B. <code>meine-seite.html</code> ein</span>
+                    <span class="fr" style="display:none">Entrez comme nom de fichier p. ex. <code>ma-page.html</code></span>
+                </li>
+                <li>
+                    <span class="de">Wählen Sie bei «Codierung» → <strong>UTF-8</strong></span>
+                    <span class="fr" style="display:none">Choisissez « Encodage » → <strong>UTF-8</strong></span>
+                </li>
+                <li>
+                    <span class="de">Klicken Sie auf <strong>Speichern</strong></span>
+                    <span class="fr" style="display:none">Cliquez sur <strong>Enregistrer</strong></span>
+                </li>
+            </ol>
+
+            <h3>
+                <span class="de">Methode 2: Bestehende .txt-Datei umbenennen</span>
+                <span class="fr" style="display:none">Méthode 2 : Renommer un fichier .txt existant</span>
+            </h3>
+            <ol>
+                <li>
+                    <span class="de">Zuerst <strong>Dateiendungen sichtbar machen</strong>: Öffnen Sie den Explorer → Klicken Sie oben auf <strong>Anzeigen</strong> → Aktivieren Sie <strong>«Dateinamenerweiterungen»</strong></span>
+                    <span class="fr" style="display:none">D'abord <strong>rendre les extensions visibles</strong> : Ouvrez l'Explorateur → Cliquez en haut sur <strong>Affichage</strong> → Activez <strong>« Extensions de noms de fichiers »</strong></span>
+                </li>
+                <li>
+                    <span class="de">Klicken Sie mit der rechten Maustaste auf die .txt-Datei → <strong>Umbenennen</strong></span>
+                    <span class="fr" style="display:none">Faites un clic droit sur le fichier .txt → <strong>Renommer</strong></span>
+                </li>
+                <li>
+                    <span class="de">Ändern Sie die Endung von <code>.txt</code> zu <code>.html</code></span>
+                    <span class="fr" style="display:none">Changez l'extension de <code>.txt</code> à <code>.html</code></span>
+                </li>
+                <li>
+                    <span class="de">Bestätigen Sie die Warnung mit <strong>Ja</strong></span>
+                    <span class="fr" style="display:none">Confirmez l'avertissement avec <strong>Oui</strong></span>
+                </li>
+            </ol>
+        </div>
+
+        <div id="os-mac" class="os-content">
+            <h3>
+                <span class="de">Methode 1: Direkt in TextEdit speichern</span>
+                <span class="fr" style="display:none">Méthode 1 : Enregistrer directement dans TextEdit</span>
+            </h3>
+            <div class="warning-box">
+                <p>
+                    <span class="de">&#x26A0;&#xFE0F; <strong>Wichtig:</strong> TextEdit muss im <strong>Nur-Text-Modus</strong> sein! Gehen Sie zu <strong>Format → In reinen Text umwandeln</strong> (oder Shift+Cmd+T) bevor Sie den Code einfügen.</span>
+                    <span class="fr" style="display:none">&#x26A0;&#xFE0F; <strong>Important :</strong> TextEdit doit être en <strong>mode texte brut</strong> ! Allez dans <strong>Format → Convertir en texte brut</strong> (ou Shift+Cmd+T) avant de coller le code.</span>
+                </p>
+            </div>
+            <ol>
+                <li>
+                    <span class="de">Öffnen Sie <strong>TextEdit</strong> (Finder → Programme → TextEdit)</span>
+                    <span class="fr" style="display:none">Ouvrez <strong>TextEdit</strong> (Finder → Applications → TextEdit)</span>
+                </li>
+                <li>
+                    <span class="de">Wechseln Sie zu <strong>reinem Text</strong>: Format → In reinen Text umwandeln</span>
+                    <span class="fr" style="display:none">Passez en <strong>texte brut</strong> : Format → Convertir en texte brut</span>
+                </li>
+                <li>
+                    <span class="de">Fügen Sie den Code ein (Cmd+V)</span>
+                    <span class="fr" style="display:none">Collez le code (Cmd+V)</span>
+                </li>
+                <li>
+                    <span class="de">Klicken Sie auf <strong>Ablage → Sichern…</strong></span>
+                    <span class="fr" style="display:none">Cliquez sur <strong>Fichier → Enregistrer…</strong></span>
+                </li>
+                <li>
+                    <span class="de">Geben Sie als Namen z.&#x202F;B. <code>meine-seite.html</code> ein</span>
+                    <span class="fr" style="display:none">Entrez comme nom p. ex. <code>ma-page.html</code></span>
+                </li>
+                <li>
+                    <span class="de">Es erscheint eine Warnung: «Möchten Sie die Erweiterung .html verwenden?» → Klicken Sie auf <strong>«.html» verwenden</strong></span>
+                    <span class="fr" style="display:none">Un avertissement apparaît : « Voulez-vous utiliser l'extension .html ? » → Cliquez sur <strong>Utiliser « .html »</strong></span>
+                </li>
+            </ol>
+
+            <h3>
+                <span class="de">Methode 2: Bestehende .txt-Datei umbenennen</span>
+                <span class="fr" style="display:none">Méthode 2 : Renommer un fichier .txt existant</span>
+            </h3>
+            <ol>
+                <li>
+                    <span class="de">Klicken Sie im Finder mit der rechten Maustaste auf die .txt-Datei → <strong>Umbenennen</strong></span>
+                    <span class="fr" style="display:none">Dans le Finder, faites un clic droit sur le fichier .txt → <strong>Renommer</strong></span>
+                </li>
+                <li>
+                    <span class="de">Ändern Sie die Endung von <code>.txt</code> zu <code>.html</code></span>
+                    <span class="fr" style="display:none">Changez l'extension de <code>.txt</code> à <code>.html</code></span>
+                </li>
+                <li>
+                    <span class="de">Es erscheint: «Möchten Sie die Erweiterung wirklich ändern?» → Klicken Sie auf <strong>«.html» verwenden</strong></span>
+                    <span class="fr" style="display:none">Il apparaît : « Voulez-vous vraiment modifier l'extension ? » → Cliquez sur <strong>Utiliser « .html »</strong></span>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="card teal">
+        <h2>
+            <span class="de">&#x1F4E4; HTML-Dateien verteilen</span>
+            <span class="fr" style="display:none">&#x1F4E4; Distribuer les fichiers HTML</span>
+        </h2>
+        <p>
+            <span class="de">Die fertige .html-Datei können Sie auf verschiedene Arten an Lernende weitergeben:</span>
+            <span class="fr" style="display:none">Vous pouvez transmettre le fichier .html fini aux apprenants de différentes manières :</span>
+        </p>
+        <ul>
+            <li>
+                <span class="de"><strong>Per Lernplattform:</strong> Auf Moodle, Teams, Google Classroom etc. hochladen</span>
+                <span class="fr" style="display:none"><strong>Via plateforme d'apprentissage :</strong> Télécharger sur Moodle, Teams, Google Classroom etc.</span>
+            </li>
+            <li>
+                <span class="de"><strong>Im Ordner:</strong> In einem gemeinsamen Ordner (z.&#x202F;B. OneDrive, Google Drive) ablegen</span>
+                <span class="fr" style="display:none"><strong>Dans un dossier :</strong> Placer dans un dossier partagé (p. ex. OneDrive, Google Drive)</span>
+            </li>
+            <li>
+                <span class="de"><strong>Per Chat/E-Mail:</strong> Als Anhang versenden</span>
+                <span class="fr" style="display:none"><strong>Par chat/e-mail :</strong> Envoyer en pièce jointe</span>
+            </li>
+            <li>
+                <span class="de"><strong>Per QR-Code:</strong> Wenn die Datei online gehostet wird (z.&#x202F;B. auf GitHub Pages)</span>
+                <span class="fr" style="display:none"><strong>Par QR-Code :</strong> Si le fichier est hébergé en ligne (p. ex. sur GitHub Pages)</span>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- ==================== TAB 3: Beispiel-Prompts ==================== -->
+<div id="prompts" class="tab-content">
+    <div class="card">
+        <h2>
+            <span class="de">&#x1F4DD; Beispiel-Prompts für interaktive Lernseiten</span>
+            <span class="fr" style="display:none">&#x1F4DD; Exemples de prompts pour des pages d'apprentissage interactives</span>
+        </h2>
+        <p>
+            <span class="de">Hier finden Sie Beispiel-Prompts, die Sie direkt in einen KI-Bot kopieren können. Passen Sie den Inhalt an Ihre Bedürfnisse an!</span>
+            <span class="fr" style="display:none">Voici des exemples de prompts que vous pouvez copier directement dans un bot IA. Adaptez le contenu à vos besoins !</span>
+        </p>
+    </div>
+
+    <div class="card orange">
+        <h2>
+            <span class="de">&#x1F9E9; Quiz-Seite</span>
+            <span class="fr" style="display:none">&#x1F9E9; Page de quiz</span>
+        </h2>
+        <div class="prompt-example">
+            <h4>Prompt:</h4>
+            <p>
+                <span class="de">Erstelle eine vollständige HTML-Seite mit einem interaktiven Quiz zum Thema [Ihr Thema]. Das Quiz soll 5 Multiple-Choice-Fragen enthalten. Jede Frage hat 4 Antwortmöglichkeiten. Wenn man eine Antwort anklickt, wird sofort angezeigt, ob sie richtig oder falsch ist (grün/rot). Am Ende wird der Punktestand angezeigt. Verwende ein modernes, ansprechendes Design mit Farben. Die Seite soll vollständig selbständig funktionieren (alles in einer HTML-Datei, inklusive CSS und JavaScript).</span>
+                <span class="fr" style="display:none">Crée une page HTML complète avec un quiz interactif sur le thème [votre thème]. Le quiz doit contenir 5 questions à choix multiples. Chaque question a 4 options de réponse. Quand on clique sur une réponse, on voit immédiatement si elle est correcte ou incorrecte (vert/rouge). À la fin, le score total est affiché. Utilise un design moderne et attrayant avec des couleurs. La page doit fonctionner de manière autonome (tout dans un seul fichier HTML, y compris CSS et JavaScript).</span>
+            </p>
+        </div>
+    </div>
+
+    <div class="card green">
+        <h2>
+            <span class="de">&#x1F4DA; Lernkarten (Flashcards)</span>
+            <span class="fr" style="display:none">&#x1F4DA; Cartes d'apprentissage (Flashcards)</span>
+        </h2>
+        <div class="prompt-example">
+            <h4>Prompt:</h4>
+            <p>
+                <span class="de">Erstelle eine HTML-Seite mit interaktiven Lernkarten (Flashcards) zum Thema [Ihr Thema]. Die Karten sollen sich beim Klick umdrehen (Vorderseite: Frage/Begriff, Rückseite: Antwort/Definition). Es sollen 10 Karten vorhanden sein. Füge Navigationsbuttons hinzu (Vorherige/Nächste). Die Seite soll ein freundliches, farbiges Design haben. Alles in einer einzigen HTML-Datei.</span>
+                <span class="fr" style="display:none">Crée une page HTML avec des cartes d'apprentissage interactives (flashcards) sur le thème [votre thème]. Les cartes doivent se retourner au clic (recto : question/terme, verso : réponse/définition). Il doit y avoir 10 cartes. Ajoute des boutons de navigation (Précédent/Suivant). La page doit avoir un design amical et coloré. Le tout dans un seul fichier HTML.</span>
+            </p>
+        </div>
+    </div>
+
+    <div class="card pink">
+        <h2>
+            <span class="de">&#x1F3AE; Zuordnungsübung (Drag &amp; Drop)</span>
+            <span class="fr" style="display:none">&#x1F3AE; Exercice d'association (Drag &amp; Drop)</span>
+        </h2>
+        <div class="prompt-example">
+            <h4>Prompt:</h4>
+            <p>
+                <span class="de">Erstelle eine HTML-Seite mit einer Drag-and-Drop-Zuordnungsübung zum Thema [Ihr Thema]. Auf der linken Seite stehen Begriffe, auf der rechten Seite Definitionen. Die Lernenden sollen die Begriffe per Drag &amp; Drop den richtigen Definitionen zuordnen. Bei richtiger Zuordnung wird das Paar grün markiert. Am Ende gibt es einen «Überprüfen»-Button. Modernes, einladendes Design. Alles in einer HTML-Datei.</span>
+                <span class="fr" style="display:none">Crée une page HTML avec un exercice d'association en drag-and-drop sur le thème [votre thème]. À gauche se trouvent les termes, à droite les définitions. Les apprenants doivent faire glisser les termes vers les bonnes définitions. En cas d'association correcte, la paire est marquée en vert. À la fin, il y a un bouton « Vérifier ». Design moderne et accueillant. Le tout dans un seul fichier HTML.</span>
+            </p>
+        </div>
+    </div>
+
+    <div class="card teal">
+        <h2>
+            <span class="de">&#x1F4D6; Interaktive Infoseite mit Tabs</span>
+            <span class="fr" style="display:none">&#x1F4D6; Page d'information interactive avec onglets</span>
+        </h2>
+        <div class="prompt-example">
+            <h4>Prompt:</h4>
+            <p>
+                <span class="de">Erstelle eine HTML-Seite, die als interaktive Infoseite zum Thema [Ihr Thema] dient. Die Seite soll verschiedene Abschnitte in Tabs organisieren. Jeder Tab behandelt ein Unterthema. Verwende aufklappbare Bereiche (Akkordeons) für zusätzliche Details. Füge einen Fortschrittsbalken hinzu, der anzeigt, wie viele Abschnitte schon gelesen wurden. Farbiges, modernes Design. Alles in einer HTML-Datei.</span>
+                <span class="fr" style="display:none">Crée une page HTML servant de page d'information interactive sur le thème [votre thème]. La page doit organiser différentes sections en onglets. Chaque onglet traite un sous-thème. Utilise des zones dépliables (accordéons) pour les détails supplémentaires. Ajoute une barre de progression qui montre combien de sections ont été lues. Design coloré et moderne. Le tout dans un seul fichier HTML.</span>
+            </p>
+        </div>
+    </div>
+
+    <!-- Padlets -->
+    <div class="card" style="border-left-color: #9f7aea;">
+        <h2>
+            <span class="de">&#x1F4CC; Workshop 1 — Padlet</span>
+            <span class="fr" style="display:none">&#x1F4CC; Atelier 1 — Padlet</span>
+        </h2>
+        <p>
+            <span class="de">Teilen Sie hier Ihre Ergebnisse und Ideen aus Workshop 1:</span>
+            <span class="fr" style="display:none">Partagez ici vos résultats et idées de l'atelier 1 :</span>
+        </p>
+        <div class="padlet-wrapper">
+            <iframe src="https://padlet.com/embed/2uzudz47ygubfv0n" frameborder="0" allow="camera;microphone;geolocation;display-capture;clipboard-write"></iframe>
+        </div>
+    </div>
+
+    <div class="card" style="border-left-color: #d69e2e;">
+        <h2>
+            <span class="de">&#x1F4CC; Workshop 2 — Padlet</span>
+            <span class="fr" style="display:none">&#x1F4CC; Atelier 2 — Padlet</span>
+        </h2>
+        <p>
+            <span class="de">Teilen Sie hier Ihre Ergebnisse und Ideen aus Workshop 2:</span>
+            <span class="fr" style="display:none">Partagez ici vos résultats et idées de l'atelier 2 :</span>
+        </p>
+        <div class="padlet-wrapper">
+            <iframe src="https://padlet.com/embed/vhhxoi84h2jj5blk" frameborder="0" allow="camera;microphone;geolocation;display-capture;clipboard-write"></iframe>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== TAB 4: Eigene Prompts ==================== -->
+<div id="create" class="tab-content">
+    <div class="card">
+        <h2>
+            <span class="de">&#x1F680; Eigene Prompts erstellen</span>
+            <span class="fr" style="display:none">&#x1F680; Créer ses propres prompts</span>
+        </h2>
+        <p>
+            <span class="de">Jetzt sind Sie dran! Erstellen Sie Ihre eigenen Prompts für interaktive Lernseiten. Der Schlüssel zum Erfolg: <strong>iteratives Vorgehen</strong>.</span>
+            <span class="fr" style="display:none">C'est à votre tour ! Créez vos propres prompts pour des pages d'apprentissage interactives. La clé du succès : <strong>une approche itérative</strong>.</span>
+        </p>
+    </div>
+
+    <div class="card orange">
+        <h2>
+            <span class="de">&#x1F504; Was bedeutet «iterativ»?</span>
+            <span class="fr" style="display:none">&#x1F504; Que signifie « itératif » ?</span>
+        </h2>
+        <p>
+            <span class="de"><strong>Iterativ</strong> bedeutet, dass Sie Ihren Prompt <strong>schrittweise verbessern</strong>. Sie schreiben einen ersten Entwurf, schauen sich das Ergebnis an und passen den Prompt dann an. Dieser Kreislauf wiederholt sich, bis das Ergebnis Ihren Vorstellungen entspricht.</span>
+            <span class="fr" style="display:none"><strong>Itératif</strong> signifie que vous <strong>améliorez votre prompt étape par étape</strong>. Vous écrivez un premier brouillon, examinez le résultat, puis adaptez le prompt. Ce cycle se répète jusqu'à ce que le résultat corresponde à vos attentes.</span>
+        </p>
+        <div class="step-grid">
+            <div class="step-box">
+                <div class="step-num">1</div>
+                <p>
+                    <span class="de">Prompt schreiben</span>
+                    <span class="fr" style="display:none">Écrire le prompt</span>
+                </p>
+            </div>
+            <div class="step-box">
+                <div class="step-num">2</div>
+                <p>
+                    <span class="de">Ergebnis testen</span>
+                    <span class="fr" style="display:none">Tester le résultat</span>
+                </p>
+            </div>
+            <div class="step-box">
+                <div class="step-num">3</div>
+                <p>
+                    <span class="de">Prompt anpassen</span>
+                    <span class="fr" style="display:none">Adapter le prompt</span>
+                </p>
+            </div>
+            <div class="step-box">
+                <div class="step-num">&#x1F504;</div>
+                <p>
+                    <span class="de">Wiederholen</span>
+                    <span class="fr" style="display:none">Répéter</span>
+                </p>
+            </div>
+        </div>
+        <div class="tip-box">
+            <p>
+                <span class="de">&#x1F4A1; <strong>Tipp:</strong> Beginnen Sie einfach und fügen Sie bei jeder Iteration Details hinzu. So vermeiden Sie übermässig komplexe Prompts.</span>
+                <span class="fr" style="display:none">&#x1F4A1; <strong>Conseil :</strong> Commencez simplement et ajoutez des détails à chaque itération. Cela évite les prompts trop complexes.</span>
+            </p>
+        </div>
+    </div>
+
+    <div class="card green">
+        <h2>
+            <span class="de">&#x2705; Was einen guten Prompt ausmacht</span>
+            <span class="fr" style="display:none">&#x2705; Ce qui fait un bon prompt</span>
+        </h2>
+        <p>
+            <span class="de">Um eine gute HTML-Seite vom KI-Bot zu erhalten, sollte Ihr Prompt diese Punkte abdecken:</span>
+            <span class="fr" style="display:none">Pour obtenir une bonne page HTML du bot IA, votre prompt devrait couvrir ces points :</span>
+        </p>
+        <ul class="checklist">
+            <li>
+                <span class="de"><strong>Zweck:</strong> Was ist das Ziel der Seite? (z.&#x202F;B. Lernstoff üben, Wissen überprüfen, informieren)</span>
+                <span class="fr" style="display:none"><strong>Objectif :</strong> Quel est le but de la page ? (p. ex. pratiquer la matière, vérifier les connaissances, informer)</span>
+            </li>
+            <li>
+                <span class="de"><strong>Zielgruppe:</strong> Wer nutzt die Seite? (z.&#x202F;B. Lernende EBA, Berufslernende, Erwachsene)</span>
+                <span class="fr" style="display:none"><strong>Public cible :</strong> Qui utilise la page ? (p. ex. apprenants AFP, apprentis, adultes)</span>
+            </li>
+            <li>
+                <span class="de"><strong>Nutzung:</strong> Wie wird das Ergebnis eingesetzt? (z.&#x202F;B. im Unterricht, als Hausaufgabe, zur Prüfungsvorbereitung)</span>
+                <span class="fr" style="display:none"><strong>Utilisation :</strong> Comment le résultat sera-t-il utilisé ? (p. ex. en cours, comme devoir, pour la préparation aux examens)</span>
+            </li>
+            <li>
+                <span class="de"><strong>Interaktivität:</strong> Welche Art von Interaktion? (z.&#x202F;B. Quiz, Drag &amp; Drop, Lückentext, Aufklappelemente)</span>
+                <span class="fr" style="display:none"><strong>Interactivité :</strong> Quel type d'interaction ? (p. ex. quiz, drag &amp; drop, texte à trous, éléments dépliables)</span>
+            </li>
+            <li>
+                <span class="de"><strong>Inhalt:</strong> Welchen Inhalt soll die Seite haben? Beschreiben Sie ihn möglichst genau oder liefern Sie ihn direkt mit.</span>
+                <span class="fr" style="display:none"><strong>Contenu :</strong> Quel contenu la page doit-elle avoir ? Décrivez-le aussi précisément que possible ou fournissez-le directement.</span>
+            </li>
+            <li>
+                <span class="de"><strong>Design:</strong> Wie soll die Seite aussehen? (z.&#x202F;B. farbenfroh, modern, schlicht)</span>
+                <span class="fr" style="display:none"><strong>Design :</strong> À quoi doit ressembler la page ? (p. ex. colorée, moderne, simple)</span>
+            </li>
+        </ul>
+
+        <div class="warning-box">
+            <p>
+                <span class="de">&#x1F512; <strong>Datenschutz & Urheberrecht beachten!</strong> Geben Sie im Prompt keine personenbezogenen Daten von Lernenden ein. Achten Sie auf Urheberrechte bei Texten und Bildern. Mehr dazu im Tab <strong>«Datenschutz & Recht»</strong>.</span>
+                <span class="fr" style="display:none">&#x1F512; <strong>Respectez la protection des données et le droit d'auteur !</strong> N'entrez pas de données personnelles d'apprenants dans le prompt. Faites attention aux droits d'auteur pour les textes et images. Plus d'infos dans l'onglet <strong>« Protection & Droit »</strong>.</span>
+            </p>
+        </div>
+    </div>
+
+    <div class="card pink">
+        <h2>
+            <span class="de">&#x1F3AF; Vorlage für Ihren Prompt</span>
+            <span class="fr" style="display:none">&#x1F3AF; Modèle pour votre prompt</span>
+        </h2>
+        <div class="prompt-example">
+            <h4>
+                <span class="de">Prompt-Vorlage:</span>
+                <span class="fr" style="display:none">Modèle de prompt :</span>
+            </h4>
+            <p>
+                <span class="de">Erstelle eine vollständige HTML-Seite mit [Art der Interaktivität] zum Thema [Thema]. Die Seite ist für [Zielgruppe] und wird [Einsatzzweck] verwendet. Sie soll folgenden Inhalt abdecken: [Inhalt beschreiben]. Das Design soll [Designwunsch] sein. Die Seite muss vollständig in einer einzigen HTML-Datei funktionieren (CSS und JavaScript integriert).</span>
+                <span class="fr" style="display:none">Crée une page HTML complète avec [type d'interactivité] sur le thème [thème]. La page est destinée à [public cible] et sera utilisée pour [objectif d'utilisation]. Elle doit couvrir le contenu suivant : [décrire le contenu]. Le design doit être [souhait de design]. La page doit fonctionner entièrement dans un seul fichier HTML (CSS et JavaScript intégrés).</span>
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== TAB 5: Datenschutz & Recht ==================== -->
+<div id="legal" class="tab-content">
+    <div class="card red">
+        <h2>
+            <span class="de">&#x1F512; Datenschutz bei der KI-Nutzung</span>
+            <span class="fr" style="display:none">&#x1F512; Protection des données lors de l'utilisation de l'IA</span>
+        </h2>
+        <p>
+            <span class="de">Beim Arbeiten mit KI-Bots ist der Datenschutz besonders wichtig. Beachten Sie folgende Grundsätze:</span>
+            <span class="fr" style="display:none">Lors de l'utilisation de bots IA, la protection des données est particulièrement importante. Respectez les principes suivants :</span>
+        </p>
+        <ul>
+            <li>
+                <span class="de"><strong>Keine personenbezogenen Daten eingeben:</strong> Geben Sie niemals Namen, Adressen, Noten oder andere persönliche Daten von Lernenden in den KI-Bot ein.</span>
+                <span class="fr" style="display:none"><strong>Ne pas entrer de données personnelles :</strong> N'entrez jamais de noms, adresses, notes ou autres données personnelles d'apprenants dans le bot IA.</span>
+            </li>
+            <li>
+                <span class="de"><strong>Anonymisieren:</strong> Falls Sie Beispiele brauchen, verwenden Sie fiktive Namen und Daten.</span>
+                <span class="fr" style="display:none"><strong>Anonymiser :</strong> Si vous avez besoin d'exemples, utilisez des noms et données fictifs.</span>
+            </li>
+            <li>
+                <span class="de"><strong>Schulkontodaten schützen:</strong> Teilen Sie keine Zugangsdaten, Passwörter oder interne Schulinformationen mit dem KI-Bot.</span>
+                <span class="fr" style="display:none"><strong>Protéger les données du compte scolaire :</strong> Ne partagez pas d'identifiants, mots de passe ou informations scolaires internes avec le bot IA.</span>
+            </li>
+            <li>
+                <span class="de"><strong>Datenverarbeitung beachten:</strong> KI-Bots verarbeiten Ihre Eingaben auf externen Servern. Prüfen Sie die Datenschutzrichtlinien des Anbieters.</span>
+                <span class="fr" style="display:none"><strong>Tenir compte du traitement des données :</strong> Les bots IA traitent vos entrées sur des serveurs externes. Vérifiez la politique de confidentialité du fournisseur.</span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="card orange">
+        <h2>
+            <span class="de">&#x00A9; Urheberrecht bei KI-generierten Inhalten</span>
+            <span class="fr" style="display:none">&#x00A9; Droit d'auteur pour le contenu généré par l'IA</span>
+        </h2>
+        <ul>
+            <li>
+                <span class="de"><strong>Texte & Inhalte:</strong> Verwenden Sie für Ihre Prompts keine urheberrechtlich geschützten Texte (z.&#x202F;B. aus Lehrmitteln) ohne Genehmigung. Formulieren Sie eigene Inhalte oder nutzen Sie frei verfügbare Materialien.</span>
+                <span class="fr" style="display:none"><strong>Textes et contenus :</strong> N'utilisez pas de textes protégés par le droit d'auteur (p. ex. de manuels scolaires) sans autorisation dans vos prompts. Formulez vos propres contenus ou utilisez des matériaux librement disponibles.</span>
+            </li>
+            <li>
+                <span class="de"><strong>Bilder:</strong> Wenn Sie Bilder in Ihre HTML-Seite einbinden möchten, nutzen Sie lizenzfreie Quellen (z.&#x202F;B. Unsplash, Pixabay, Wikimedia Commons) oder erstellen Sie eigene Bilder.</span>
+                <span class="fr" style="display:none"><strong>Images :</strong> Si vous souhaitez intégrer des images dans votre page HTML, utilisez des sources libres de droits (p. ex. Unsplash, Pixabay, Wikimedia Commons) ou créez vos propres images.</span>
+            </li>
+            <li>
+                <span class="de"><strong>KI-generierter Code:</strong> Der von der KI generierte HTML-Code darf frei verwendet werden. Beachten Sie jedoch, dass die KI möglicherweise Inhalte generiert, die urheberrechtlich geschützten Werken ähneln.</span>
+                <span class="fr" style="display:none"><strong>Code généré par l'IA :</strong> Le code HTML généré par l'IA peut être utilisé librement. Notez cependant que l'IA peut générer des contenus similaires à des œuvres protégées par le droit d'auteur.</span>
+            </li>
+            <li>
+                <span class="de"><strong>Quellen angeben:</strong> Wenn Sie Inhalte aus externen Quellen verwenden, geben Sie die Quelle in Ihrer HTML-Seite an.</span>
+                <span class="fr" style="display:none"><strong>Citer les sources :</strong> Si vous utilisez des contenus provenant de sources externes, indiquez la source dans votre page HTML.</span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="card green">
+        <h2>
+            <span class="de">&#x1F4A1; Praktische Tipps</span>
+            <span class="fr" style="display:none">&#x1F4A1; Conseils pratiques</span>
+        </h2>
+        <ul class="checklist">
+            <li>
+                <span class="de">Vor der Veröffentlichung: Prüfen Sie den generierten Inhalt auf Korrektheit und Angemessenheit.</span>
+                <span class="fr" style="display:none">Avant la publication : Vérifiez l'exactitude et la pertinence du contenu généré.</span>
+            </li>
+            <li>
+                <span class="de">Inhalte lieber selbst formulieren und dem KI-Bot nur die Struktur/Interaktivität überlassen.</span>
+                <span class="fr" style="display:none">Préférez formuler les contenus vous-même et ne confier au bot IA que la structure/interactivité.</span>
+            </li>
+            <li>
+                <span class="de">Bei Unsicherheiten bezüglich Urheberrecht: Schulleitung oder Rechtsberatung konsultieren.</span>
+                <span class="fr" style="display:none">En cas de doute concernant le droit d'auteur : consultez la direction de l'école ou un conseiller juridique.</span>
+            </li>
+            <li>
+                <span class="de">Creative-Commons-Lizenzen (CC) nutzen und verstehen — diese erlauben oft die freie Nutzung unter bestimmten Bedingungen.</span>
+                <span class="fr" style="display:none">Utiliser et comprendre les licences Creative Commons (CC) — celles-ci permettent souvent une utilisation libre sous certaines conditions.</span>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<footer>
+    <span class="de">HTML-Editor Workshop — hep impuls</span>
+    <span class="fr" style="display:none">Atelier HTML-Editor — hep impuls</span>
+</footer>
+
+<script>
+    // Tab Navigation
+    function openTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        // Find the button that matches
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            if (btn.getAttribute('onclick').includes(tabId)) {
+                btn.classList.add('active');
+            }
+        });
+    }
+
+    // OS Tabs (Windows/Mac)
+    function switchOS(os) {
+        document.querySelectorAll('.os-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.os-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById('os-' + os).classList.add('active');
+        event.target.classList.add('active');
+    }
+
+    // Language Toggle
+    function setLang(lang) {
+        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            if ((lang === 'de' && btn.textContent === 'DE') || (lang === 'fr' && btn.textContent === 'FR')) {
+                btn.classList.add('active');
+            }
+        });
+
+        if (lang === 'de') {
+            document.querySelectorAll('.de').forEach(el => el.style.display = '');
+            document.querySelectorAll('.fr').forEach(el => el.style.display = 'none');
+            document.documentElement.lang = 'de';
+        } else {
+            document.querySelectorAll('.de').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.fr').forEach(el => el.style.display = '');
+            document.documentElement.lang = 'fr';
+        }
+    }
+</script>
+
+</body>
+</html>
