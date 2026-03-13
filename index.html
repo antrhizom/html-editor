@@ -392,6 +392,10 @@
         <span class="de">&#x1F512; Datenschutz & Recht</span>
         <span class="fr" style="display:none">&#x1F512; Protection & Droit</span>
     </button>
+    <button class="tab-btn" onclick="openTab('team')">
+        <span class="de">&#x1F464; Kursleitung</span>
+        <span class="fr" style="display:none">&#x1F464; Direction du cours</span>
+    </button>
 </nav>
 
 <!-- ==================== TAB 1: Einführung ==================== -->
@@ -569,8 +573,31 @@
 
         <div id="os-windows" class="os-content active">
             <h3>
-                <span class="de">Methode 1: Direkt im Editor (Notepad) speichern</span>
-                <span class="fr" style="display:none">Méthode 1 : Enregistrer directement dans le Bloc-notes</span>
+                <span class="de">Methode 1: Bestehende .txt-Datei umbenennen</span>
+                <span class="fr" style="display:none">Méthode 1 : Renommer un fichier .txt existant</span>
+            </h3>
+            <ol>
+                <li>
+                    <span class="de">Zuerst <strong>Dateiendungen sichtbar machen</strong>: Öffnen Sie den Explorer → Klicken Sie oben auf <strong>Anzeigen</strong> → Aktivieren Sie <strong>«Dateinamenerweiterungen»</strong></span>
+                    <span class="fr" style="display:none">D'abord <strong>rendre les extensions visibles</strong> : Ouvrez l'Explorateur → Cliquez en haut sur <strong>Affichage</strong> → Activez <strong>« Extensions de noms de fichiers »</strong></span>
+                </li>
+                <li>
+                    <span class="de">Klicken Sie mit der rechten Maustaste auf die .txt-Datei → <strong>Umbenennen</strong></span>
+                    <span class="fr" style="display:none">Faites un clic droit sur le fichier .txt → <strong>Renommer</strong></span>
+                </li>
+                <li>
+                    <span class="de">Ändern Sie die Endung von <code>.txt</code> zu <code>.html</code></span>
+                    <span class="fr" style="display:none">Changez l'extension de <code>.txt</code> à <code>.html</code></span>
+                </li>
+                <li>
+                    <span class="de">Bestätigen Sie die Warnung mit <strong>Ja</strong></span>
+                    <span class="fr" style="display:none">Confirmez l'avertissement avec <strong>Oui</strong></span>
+                </li>
+            </ol>
+
+            <h3>
+                <span class="de">Methode 2: Direkt im Editor (Notepad) speichern</span>
+                <span class="fr" style="display:none">Méthode 2 : Enregistrer directement dans le Bloc-notes</span>
             </h3>
             <ol>
                 <li>
@@ -602,35 +629,31 @@
                     <span class="fr" style="display:none">Cliquez sur <strong>Enregistrer</strong></span>
                 </li>
             </ol>
+        </div>
 
+        <div id="os-mac" class="os-content">
             <h3>
-                <span class="de">Methode 2: Bestehende .txt-Datei umbenennen</span>
-                <span class="fr" style="display:none">Méthode 2 : Renommer un fichier .txt existant</span>
+                <span class="de">Methode 1: Bestehende .txt-Datei umbenennen</span>
+                <span class="fr" style="display:none">Méthode 1 : Renommer un fichier .txt existant</span>
             </h3>
             <ol>
                 <li>
-                    <span class="de">Zuerst <strong>Dateiendungen sichtbar machen</strong>: Öffnen Sie den Explorer → Klicken Sie oben auf <strong>Anzeigen</strong> → Aktivieren Sie <strong>«Dateinamenerweiterungen»</strong></span>
-                    <span class="fr" style="display:none">D'abord <strong>rendre les extensions visibles</strong> : Ouvrez l'Explorateur → Cliquez en haut sur <strong>Affichage</strong> → Activez <strong>« Extensions de noms de fichiers »</strong></span>
-                </li>
-                <li>
-                    <span class="de">Klicken Sie mit der rechten Maustaste auf die .txt-Datei → <strong>Umbenennen</strong></span>
-                    <span class="fr" style="display:none">Faites un clic droit sur le fichier .txt → <strong>Renommer</strong></span>
+                    <span class="de">Klicken Sie im Finder mit der rechten Maustaste auf die .txt-Datei → <strong>Umbenennen</strong></span>
+                    <span class="fr" style="display:none">Dans le Finder, faites un clic droit sur le fichier .txt → <strong>Renommer</strong></span>
                 </li>
                 <li>
                     <span class="de">Ändern Sie die Endung von <code>.txt</code> zu <code>.html</code></span>
                     <span class="fr" style="display:none">Changez l'extension de <code>.txt</code> à <code>.html</code></span>
                 </li>
                 <li>
-                    <span class="de">Bestätigen Sie die Warnung mit <strong>Ja</strong></span>
-                    <span class="fr" style="display:none">Confirmez l'avertissement avec <strong>Oui</strong></span>
+                    <span class="de">Es erscheint: «Möchten Sie die Erweiterung wirklich ändern?» → Klicken Sie auf <strong>«.html» verwenden</strong></span>
+                    <span class="fr" style="display:none">Il apparaît : « Voulez-vous vraiment modifier l'extension ? » → Cliquez sur <strong>Utiliser « .html »</strong></span>
                 </li>
             </ol>
-        </div>
 
-        <div id="os-mac" class="os-content">
             <h3>
-                <span class="de">Methode 1: Direkt in TextEdit speichern</span>
-                <span class="fr" style="display:none">Méthode 1 : Enregistrer directement dans TextEdit</span>
+                <span class="de">Methode 2: Direkt in TextEdit speichern</span>
+                <span class="fr" style="display:none">Méthode 2 : Enregistrer directement dans TextEdit</span>
             </h3>
             <div class="warning-box">
                 <p>
@@ -662,25 +685,6 @@
                 <li>
                     <span class="de">Es erscheint eine Warnung: «Möchten Sie die Erweiterung .html verwenden?» → Klicken Sie auf <strong>«.html» verwenden</strong></span>
                     <span class="fr" style="display:none">Un avertissement apparaît : « Voulez-vous utiliser l'extension .html ? » → Cliquez sur <strong>Utiliser « .html »</strong></span>
-                </li>
-            </ol>
-
-            <h3>
-                <span class="de">Methode 2: Bestehende .txt-Datei umbenennen</span>
-                <span class="fr" style="display:none">Méthode 2 : Renommer un fichier .txt existant</span>
-            </h3>
-            <ol>
-                <li>
-                    <span class="de">Klicken Sie im Finder mit der rechten Maustaste auf die .txt-Datei → <strong>Umbenennen</strong></span>
-                    <span class="fr" style="display:none">Dans le Finder, faites un clic droit sur le fichier .txt → <strong>Renommer</strong></span>
-                </li>
-                <li>
-                    <span class="de">Ändern Sie die Endung von <code>.txt</code> zu <code>.html</code></span>
-                    <span class="fr" style="display:none">Changez l'extension de <code>.txt</code> à <code>.html</code></span>
-                </li>
-                <li>
-                    <span class="de">Es erscheint: «Möchten Sie die Erweiterung wirklich ändern?» → Klicken Sie auf <strong>«.html» verwenden</strong></span>
-                    <span class="fr" style="display:none">Il apparaît : « Voulez-vous vraiment modifier l'extension ? » → Cliquez sur <strong>Utiliser « .html »</strong></span>
                 </li>
             </ol>
         </div>
@@ -1187,6 +1191,116 @@
                 <span class="fr" style="display:none">Utiliser et comprendre les licences Creative Commons (CC) — celles-ci permettent souvent une utilisation libre sous certaines conditions.</span>
             </li>
         </ul>
+    </div>
+</div>
+
+<!-- ==================== TAB 7: Kursleitung ==================== -->
+<div id="team" class="tab-content">
+    <div class="card">
+        <h2>
+            <span class="de">&#x1F464; Kursleitung</span>
+            <span class="fr" style="display:none">&#x1F464; Direction du cours</span>
+        </h2>
+        <p>
+            <span class="de">Dieser Workshop wird geleitet von zwei Berufsschullehrpersonen, die digitale Werkzeuge im ABU-Unterricht einsetzen und als freie Autoren für den <strong>hep Verlag</strong> tätig sind.</span>
+            <span class="fr" style="display:none">Cet atelier est animé par deux enseignants professionnels qui utilisent des outils numériques dans l'enseignement CG et travaillent comme auteurs indépendants pour les <strong>éditions hep</strong>.</span>
+        </p>
+    </div>
+
+    <div class="card orange">
+        <h2>
+            <span class="de">Christof Glaus</span>
+            <span class="fr" style="display:none">Christof Glaus</span>
+        </h2>
+        <ul>
+            <li>
+                <span class="de">Berufsschullehrperson ABU an der <strong>Berufsbildungsschule Winterthur (BBW)</strong></span>
+                <span class="fr" style="display:none">Enseignant CG à l'<strong>école professionnelle de Winterthour (BBW)</strong></span>
+            </li>
+            <li>
+                <span class="de">Freier Autor beim <strong>hep Verlag</strong> — digitale Auftritte zu Abstimmungen und aktuellen Themen</span>
+                <span class="fr" style="display:none">Auteur indépendant chez <strong>hep Verlag</strong> — contenus numériques sur les votations et thèmes d'actualité</span>
+            </li>
+            <li>
+                <span class="de">Mitglied im <strong>pädagogisch-didaktischen IKT-Team</strong> der BBW</span>
+                <span class="fr" style="display:none">Membre de l'<strong>équipe pédagogique TIC</strong> de la BBW</span>
+            </li>
+            <li>
+                <span class="de">Tätig beim <strong>Digital Learning Hub</strong></span>
+                <span class="fr" style="display:none">Actif au <strong>Digital Learning Hub</strong></span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="card green">
+        <h2>
+            <span class="de">Pietro Rossi</span>
+            <span class="fr" style="display:none">Pietro Rossi</span>
+        </h2>
+        <ul>
+            <li>
+                <span class="de">Berufsschullehrperson ABU an der <strong>Berufsbildungsschule Winterthur (BBW)</strong></span>
+                <span class="fr" style="display:none">Enseignant CG à l'<strong>école professionnelle de Winterthour (BBW)</strong></span>
+            </li>
+            <li>
+                <span class="de">Freier Autor beim <strong>hep Verlag</strong> — digitale Auftritte zu Abstimmungen und aktuellen Themen</span>
+                <span class="fr" style="display:none">Auteur indépendant chez <strong>hep Verlag</strong> — contenus numériques sur les votations et thèmes d'actualité</span>
+            </li>
+            <li>
+                <span class="de">Mitglied im <strong>pädagogisch-didaktischen IKT-Team</strong> der BBW</span>
+                <span class="fr" style="display:none">Membre de l'<strong>équipe pédagogique TIC</strong> de la BBW</span>
+            </li>
+            <li>
+                <span class="de">Tätig in der <strong>Erwachsenenbildung</strong></span>
+                <span class="fr" style="display:none">Actif dans la <strong>formation des adultes</strong></span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="card pink">
+        <h2>
+            <span class="de">&#x1F4CC; Beispiel: hep impuls</span>
+            <span class="fr" style="display:none">&#x1F4CC; Exemple : hep impuls</span>
+        </h2>
+        <p>
+            <span class="de">Als freie Autoren erstellen Christof und Pietro für den hep Verlag digitale Auftritte zu Abstimmungen und aktuellen Themen — interaktive Lernmaterialien, die direkt im Unterricht eingesetzt werden können:</span>
+            <span class="fr" style="display:none">En tant qu'auteurs indépendants, Christof et Pietro créent pour hep Verlag des supports numériques sur les votations et thèmes d'actualité — des supports d'apprentissage interactifs utilisables directement en cours :</span>
+        </p>
+        <p>
+            <span class="de">&#x1F517; <a href="https://www.hep-verlag.ch/aktuelles/impuls-abstimmung-8-maerz-2026" target="_blank" style="color: #667eea;">hep impuls — Abstimmung 8. März 2026</a></span>
+            <span class="fr" style="display:none">&#x1F517; <a href="https://www.hep-verlag.ch/aktuelles/impuls-abstimmung-8-maerz-2026" target="_blank" style="color: #667eea;">hep impuls — Votation 8 mars 2026</a></span>
+        </p>
+    </div>
+
+    <div class="card teal">
+        <h2>
+            <span class="de">&#x1F3AF; Unsere Motivation</span>
+            <span class="fr" style="display:none">&#x1F3AF; Notre motivation</span>
+        </h2>
+        <p>
+            <span class="de">Warum setzen wir auf digitale Werkzeuge im Unterricht?</span>
+            <span class="fr" style="display:none">Pourquoi misons-nous sur les outils numériques dans l'enseignement ?</span>
+        </p>
+        <ul>
+            <li>
+                <span class="de"><strong>Übersicht verbessern:</strong> Digitale Tools ermöglichen eine bessere Übersicht über die Lernprozesse der Lernenden.</span>
+                <span class="fr" style="display:none"><strong>Améliorer la vue d'ensemble :</strong> Les outils numériques permettent un meilleur suivi des processus d'apprentissage.</span>
+            </li>
+            <li>
+                <span class="de"><strong>Aktivität fördern:</strong> Interaktive Lernmaterialien aktivieren die Lernenden und fördern die Beteiligung im Unterricht.</span>
+                <span class="fr" style="display:none"><strong>Encourager l'activité :</strong> Les supports d'apprentissage interactifs activent les apprenants et favorisent la participation en cours.</span>
+            </li>
+            <li>
+                <span class="de"><strong>Multimediale Wissensvermittlung:</strong> Verschiedene Medienformate (Text, Bild, Video, Interaktion) ermöglichen vielfältige Zugänge zum Lernstoff.</span>
+                <span class="fr" style="display:none"><strong>Transmission multimédia :</strong> Différents formats médiatiques (texte, image, vidéo, interaction) offrent des accès variés à la matière.</span>
+            </li>
+        </ul>
+        <div class="tip-box">
+            <p>
+                <span class="de">&#x1F4AC; <strong>Motto:</strong> «Mit kollaborativer Lernraumgestaltung Aktivität fördern.»</span>
+                <span class="fr" style="display:none">&#x1F4AC; <strong>Devise :</strong> « Encourager l'activité grâce à une conception collaborative des espaces d'apprentissage. »</span>
+            </p>
+        </div>
     </div>
 </div>
 
